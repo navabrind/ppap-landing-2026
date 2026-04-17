@@ -1,0 +1,1392 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PPAP Modules for Odoo 19 — Workflow &amp; Manager by Navabrind IT Solutions</title>
+  <meta name="description" content="Two PPAP modules for Odoo 19: PPAP Workflow ($349) for Automotive AIAG PPAP-4, and PPAP Manager ($499) for Multi-Industry (Automotive, Aerospace, Medical, General). Built by Navabrind IT Solutions." />
+  <meta property="og:title" content="PPAP Modules for Odoo 19 — Navabrind IT Solutions" />
+  <meta property="og:description" content="PPAP Workflow ($349) and PPAP Manager ($499) — two purpose-built PPAP modules for Odoo 19 by Navabrind IT Solutions." />
+  <meta property="og:type" content="website" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ── DESIGN TOKENS ─────────────────────────────────────────── */
+    :root {
+      --text-xs:   clamp(0.75rem,  0.7rem  + 0.25vw, 0.875rem);
+      --text-sm:   clamp(0.875rem, 0.8rem  + 0.35vw, 1rem);
+      --text-base: clamp(1rem,     0.95rem + 0.25vw, 1.125rem);
+      --text-lg:   clamp(1.125rem, 1rem    + 0.75vw, 1.5rem);
+      --text-xl:   clamp(1.5rem,   1.2rem  + 1.25vw, 2.25rem);
+      --text-2xl:  clamp(2rem,     1.2rem  + 2.5vw,  3.5rem);
+      --text-3xl:  clamp(2.5rem,   1rem    + 4vw,    5rem);
+
+      --space-1: 0.25rem; --space-2: 0.5rem;  --space-3: 0.75rem;
+      --space-4: 1rem;    --space-5: 1.25rem; --space-6: 1.5rem;
+      --space-8: 2rem;    --space-10:2.5rem;  --space-12:3rem;
+      --space-16:4rem;    --space-20:5rem;    --space-24:6rem;
+
+      --radius-sm: 0.375rem; --radius-md: 0.5rem; --radius-lg: 0.75rem;
+      --radius-xl: 1rem;     --radius-2xl:1.5rem; --radius-full:9999px;
+      --transition: 200ms cubic-bezier(0.16, 1, 0.3, 1);
+
+      /* Content widths */
+      --content: 1100px;
+      --content-narrow: 720px;
+
+      /* Brand palette — Odoo purple + dark navy */
+      --brand:         #875a7b;
+      --brand-light:   #a67ba0;
+      --brand-dim:     #6b4662;
+      --brand-glow:    rgba(135,90,123,0.18);
+      --accent:        #e94560;
+      --accent-hover:  #d03450;
+      --navy:          #0f3460;
+      --navy-mid:      #16213e;
+      --navy-deep:     #1a1a2e;
+    }
+
+    /* ── MODULE DROPDOWN ───────────────────────────────────────────── */
+    .nav-modules-wrap { position: relative; }
+    .nav-modules-btn {
+      display: flex; align-items: center; gap: 4px;
+      font-size: var(--text-sm); color: var(--color-text-muted);
+      cursor: pointer; background: none; border: none;
+      padding: 0; font-family: inherit; font-weight: 500;
+      transition: color var(--transition);
+    }
+    .nav-modules-btn:hover { color: var(--color-text); }
+    .nav-modules-btn svg { transition: transform 0.2s; }
+    .nav-modules-wrap.open .nav-modules-btn svg { transform: rotate(180deg); }
+    .nav-modules-dropdown {
+      display: none; position: absolute; top: calc(100% + 10px); right: 0;
+      min-width: 300px; background: var(--color-surface-card);
+      border: 1px solid var(--color-border); border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg); z-index: 100; padding: 8px;
+    }
+    .nav-modules-wrap.open .nav-modules-dropdown { display: block; }
+    .nav-mod-item {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 12px 14px; border-radius: var(--radius-md);
+      text-decoration: none; transition: background var(--transition);
+    }
+    .nav-mod-item:hover { background: var(--color-surface-2); }
+    .nav-mod-badge {
+      font-size: 10px; font-weight: 700; padding: 2px 8px;
+      border-radius: var(--radius-full); white-space: nowrap; margin-top: 2px; flex-shrink: 0;
+    }
+    .nav-mod-badge.automotive { background: rgba(135,90,123,0.18); color: var(--brand-light); }
+    .nav-mod-badge.multi { background: rgba(14,165,233,0.15); color: #38bdf8; }
+    .nav-mod-title { font-size: var(--text-sm); font-weight: 700; color: var(--color-text); }
+    .nav-mod-desc { font-size: var(--text-xs); color: var(--color-text-muted); margin-top: 2px; line-height: 1.4; }
+    .nav-mod-price { font-size: var(--text-xs); font-weight: 700; color: var(--brand-light); margin-top: 4px; }
+
+    /* ── MODULES SECTION ─────────────────────────────────────────────── */
+    .modules-section { background: var(--color-bg); }
+    .modules-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-6); }
+    @media (max-width: 720px) { .modules-grid { grid-template-columns: 1fr; } }
+    .module-card {
+      border: 1px solid var(--color-border); border-radius: var(--radius-xl);
+      padding: var(--space-8); display: flex; flex-direction: column;
+      background: var(--color-surface-card); transition: border-color var(--transition), box-shadow var(--transition);
+    }
+    .module-card:hover { border-color: var(--brand); box-shadow: var(--shadow-md); }
+    .module-card.featured { border-color: #0ea5e9; }
+    .module-card.featured:hover { border-color: #38bdf8; box-shadow: 0 4px 24px rgba(14,165,233,0.15); }
+    .mod-tag {
+      display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: 0.06em;
+      text-transform: uppercase; padding: 3px 10px; border-radius: var(--radius-full); margin-bottom: var(--space-4);
+    }
+    .mod-tag.automotive { background: rgba(135,90,123,0.18); color: var(--brand-light); }
+    .mod-tag.multi { background: rgba(14,165,233,0.15); color: #38bdf8; }
+    .mod-title { font-size: var(--text-lg); font-weight: 800; color: var(--color-text); margin: 0 0 var(--space-2); }
+    .mod-subtitle { font-size: var(--text-sm); color: var(--color-text-muted); margin: 0 0 var(--space-5); line-height: 1.6; }
+    .mod-price-row { display: flex; align-items: baseline; gap: var(--space-2); margin-bottom: var(--space-5); }
+    .mod-price { font-size: 2rem; font-weight: 800; color: var(--color-text); }
+    .mod-price-note { font-size: var(--text-xs); color: var(--color-text-muted); }
+    .mod-bullets { list-style: none; padding: 0; margin: 0 0 var(--space-6); display: flex; flex-direction: column; gap: var(--space-2); }
+    .mod-bullets li { display: flex; align-items: flex-start; gap: var(--space-2); font-size: var(--text-sm); color: var(--color-text-muted); }
+    .mod-bullets li::before { content: '\2713'; color: var(--brand-light); font-weight: 700; flex-shrink: 0; }
+    .mod-bullets li.featured-bullet::before { content: '\2713'; color: #38bdf8; }
+    .mod-actions { display: flex; flex-direction: column; gap: var(--space-3); margin-top: auto; }
+    .btn-buy {
+      display: block; text-align: center; text-decoration: none;
+      background: var(--brand); color: #fff; font-size: var(--text-sm); font-weight: 700;
+      padding: 0.75rem 1.5rem; border-radius: var(--radius-md);
+      transition: background var(--transition), transform var(--transition);
+    }
+    .btn-buy:hover { background: var(--brand-light); transform: translateY(-1px); }
+    .btn-buy.featured-buy { background: #0284c7; }
+    .btn-buy.featured-buy:hover { background: #0ea5e9; }
+    .btn-buy-outline {
+      display: block; text-align: center; text-decoration: none;
+      border: 1px solid var(--color-border); color: var(--color-text-muted);
+      font-size: var(--text-sm); font-weight: 600;
+      padding: 0.7rem 1.5rem; border-radius: var(--radius-md);
+      transition: border-color var(--transition), color var(--transition);
+    }
+    .btn-buy-outline:hover { border-color: var(--brand-light); color: var(--color-text); }
+
+    /* ── SELECT STYLE ────────────────────────────────────────────────── */
+    .form-row select {
+      width: 100%; background: var(--color-surface-2); border: 1px solid var(--color-border);
+      border-radius: var(--radius-md); padding: 0.65rem 0.85rem;
+      font-size: var(--text-sm); color: var(--color-text); outline: none;
+      font-family: inherit;
+      appearance: none; -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239a94aa' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 12px center;
+      transition: border-color var(--transition), box-shadow var(--transition);
+    }
+    .form-row select:focus { border-color: var(--brand); box-shadow: 0 0 0 3px var(--brand-glow); }
+
+    /* DARK MODE (default) */
+    :root, [data-theme="dark"] {
+      --color-bg:           #0d0c0f;
+      --color-surface:      #131118;
+      --color-surface-2:    #1a1724;
+      --color-surface-card: #1e1b28;
+      --color-border:       #2e2a3a;
+      --color-divider:      #242030;
+      --color-text:         #e8e4f0;
+      --color-text-muted:   #9a94aa;
+      --color-text-faint:   #5a5568;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.4);
+      --shadow-md: 0 4px 16px rgba(0,0,0,0.5);
+      --shadow-lg: 0 12px 40px rgba(0,0,0,0.6);
+    }
+
+    /* LIGHT MODE */
+    [data-theme="light"] {
+      --color-bg:           #f7f6f9;
+      --color-surface:      #ffffff;
+      --color-surface-2:    #f2f0f7;
+      --color-surface-card: #ffffff;
+      --color-border:       #e0dcea;
+      --color-divider:      #ede9f4;
+      --color-text:         #1a1625;
+      --color-text-muted:   #6b6480;
+      --color-text-faint:   #b5b0c5;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+      --shadow-md: 0 4px 16px rgba(0,0,0,0.10);
+      --shadow-lg: 0 12px 40px rgba(0,0,0,0.12);
+    }
+
+    /* ── BASE RESET ─────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 72px;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: var(--text-base);
+      line-height: 1.65;
+      color: var(--color-text);
+      background: var(--color-bg);
+      transition: background var(--transition), color var(--transition);
+    }
+    img { display: block; max-width: 100%; height: auto; }
+    a { color: inherit; text-decoration: none; }
+    button { cursor: pointer; font: inherit; border: none; background: none; }
+    h1, h2, h3, h4 { font-family: 'Plus Jakarta Sans', sans-serif; line-height: 1.15; text-wrap: balance; }
+    p, li { text-wrap: pretty; }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+    }
+
+    /* ── LAYOUT HELPERS ─────────────────────────────────────────── */
+    .container { max-width: var(--content); margin-inline: auto; padding-inline: clamp(var(--space-4), 5vw, var(--space-10)); }
+    .container--narrow { max-width: var(--content-narrow); margin-inline: auto; padding-inline: clamp(var(--space-4), 5vw, var(--space-10)); }
+    section { padding-block: clamp(var(--space-12), 8vw, var(--space-24)); }
+
+    /* ── HEADER / NAV ────────────────────────────────────────────── */
+    .site-header {
+      position: sticky; top: 0; z-index: 100;
+      background: color-mix(in srgb, var(--color-bg) 88%, transparent);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--color-border);
+      transition: box-shadow var(--transition), background var(--transition);
+    }
+    .site-header.scrolled { box-shadow: var(--shadow-md); }
+    .nav-inner {
+      display: flex; align-items: center; gap: var(--space-8);
+      height: 64px; padding-inline: clamp(var(--space-4), 5vw, var(--space-10));
+      max-width: var(--content); margin-inline: auto;
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: var(--space-3);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: var(--text-sm); font-weight: 800;
+      color: var(--color-text); white-space: nowrap;
+    }
+    .nav-logo svg { flex-shrink: 0; }
+    .nav-links {
+      display: flex; align-items: center; gap: var(--space-6);
+      list-style: none; margin-left: auto;
+    }
+    .nav-links a {
+      font-size: var(--text-sm); color: var(--color-text-muted);
+      transition: color var(--transition); font-weight: 500;
+    }
+    .nav-links a:hover { color: var(--color-text); }
+    .nav-actions { display: flex; align-items: center; gap: var(--space-3); }
+    .theme-toggle {
+      display: flex; align-items: center; justify-content: center;
+      width: 36px; height: 36px; border-radius: var(--radius-full);
+      color: var(--color-text-muted); border: 1px solid var(--color-border);
+      background: var(--color-surface); transition: all var(--transition);
+    }
+    .theme-toggle:hover { color: var(--color-text); border-color: var(--brand); }
+    .btn {
+      display: inline-flex; align-items: center; gap: var(--space-2);
+      padding: 0.5rem 1.25rem; border-radius: var(--radius-full);
+      font-size: var(--text-sm); font-weight: 600;
+      transition: all var(--transition); white-space: nowrap;
+    }
+    .btn-primary {
+      background: var(--brand); color: #fff;
+      box-shadow: 0 2px 10px rgba(135,90,123,0.35);
+    }
+    .btn-primary:hover { background: var(--brand-light); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(135,90,123,0.45); }
+    .btn-outline {
+      background: transparent; color: var(--color-text);
+      border: 1px solid var(--color-border);
+    }
+    .btn-outline:hover { border-color: var(--brand); color: var(--brand); }
+
+    /* ── HERO ────────────────────────────────────────────────────── */
+    .hero {
+      position: relative; overflow: hidden;
+      background: var(--navy-deep);
+      padding-block: clamp(var(--space-16), 12vw, 120px) clamp(var(--space-16), 10vw, 100px);
+      text-align: center;
+    }
+    /* Radial glow blobs */
+    .hero::before {
+      content: ''; position: absolute; inset: 0; pointer-events: none;
+      background:
+        radial-gradient(ellipse 60% 50% at 20% 40%, rgba(135,90,123,0.22) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 40% at 80% 60%, rgba(15,52,96,0.40) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 60% at 50% 100%, rgba(233,69,96,0.10) 0%, transparent 60%);
+    }
+    /* Grid overlay */
+    .hero::after {
+      content: ''; position: absolute; inset: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(135,90,123,0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(135,90,123,0.06) 1px, transparent 1px);
+      background-size: 48px 48px;
+      mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 0%, transparent 100%);
+    }
+    .hero-inner { position: relative; z-index: 2; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: var(--space-2);
+      background: rgba(135,90,123,0.15); border: 1px solid rgba(135,90,123,0.4);
+      color: var(--brand-light); border-radius: var(--radius-full);
+      padding: 0.3rem 1rem; font-size: var(--text-xs); font-weight: 600;
+      letter-spacing: 0.04em; text-transform: uppercase;
+      margin-bottom: var(--space-6);
+    }
+    .hero-title {
+      font-size: var(--text-3xl); font-weight: 800;
+      color: #fff; letter-spacing: -0.03em; margin-bottom: var(--space-5);
+    }
+    .hero-title em {
+      font-style: normal;
+      background: linear-gradient(135deg, var(--brand-light) 0%, var(--accent) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-sub {
+      font-size: var(--text-lg); color: #9ba8bb;
+      max-width: 600px; margin-inline: auto; margin-bottom: var(--space-8);
+      line-height: 1.6;
+    }
+    .hero-chips {
+      display: flex; flex-wrap: wrap; justify-content: center;
+      gap: var(--space-2); margin-bottom: var(--space-10);
+    }
+    .chip {
+      display: inline-block; padding: 0.3rem 0.9rem;
+      border-radius: var(--radius-full); font-size: var(--text-xs); font-weight: 600;
+      background: rgba(255,255,255,0.07); color: #c5ccd8;
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+    .chip.highlight { background: var(--brand-glow); border-color: rgba(135,90,123,0.5); color: var(--brand-light); }
+    .hero-cta { display: flex; align-items: center; justify-content: center; gap: var(--space-4); flex-wrap: wrap; }
+    .price-badge {
+      display: inline-flex; align-items: center; gap: var(--space-2);
+      background: linear-gradient(135deg, var(--accent), #c92a48);
+      color: #fff; border-radius: var(--radius-full);
+      padding: 0.6rem 1.6rem; font-size: var(--text-lg); font-weight: 800;
+      box-shadow: 0 4px 20px rgba(233,69,96,0.4); letter-spacing: 0.02em;
+    }
+
+    /* ── STATS STRIP ─────────────────────────────────────────────── */
+    .stats-strip {
+      background: var(--color-surface);
+      border-block: 1px solid var(--color-border);
+    }
+    .stats-inner {
+      display: flex; align-items: stretch;
+      max-width: var(--content); margin-inline: auto;
+      padding-inline: clamp(var(--space-4), 5vw, var(--space-10));
+      flex-wrap: wrap;
+    }
+    .stat-item {
+      flex: 1; min-width: 140px; text-align: center;
+      padding: var(--space-6) var(--space-4);
+      border-right: 1px solid var(--color-border);
+    }
+    .stat-item:last-child { border-right: none; }
+    .stat-num { font-family: 'Plus Jakarta Sans', sans-serif; font-size: var(--text-2xl); font-weight: 800; color: var(--brand-light); }
+    .stat-label { font-size: var(--text-xs); color: var(--color-text-muted); margin-top: var(--space-1); text-transform: uppercase; letter-spacing: 0.05em; }
+
+    /* ── SECTION HEADERS ─────────────────────────────────────────── */
+    .section-label {
+      display: inline-block; font-size: var(--text-xs); font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.08em;
+      color: var(--brand-light); margin-bottom: var(--space-3);
+    }
+    .section-title {
+      font-size: var(--text-2xl); font-weight: 800;
+      color: var(--color-text); letter-spacing: -0.02em; margin-bottom: var(--space-4);
+    }
+    .section-sub { font-size: var(--text-base); color: var(--color-text-muted); max-width: 60ch; }
+    .section-header { margin-bottom: clamp(var(--space-8), 5vw, var(--space-12)); }
+
+    /* ── FEATURES GRID ───────────────────────────────────────────── */
+    .features-section { background: var(--color-surface-2); }
+    .features-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-5);
+    }
+    .feat-card {
+      background: var(--color-surface-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl); padding: var(--space-6);
+      transition: all var(--transition); position: relative; overflow: hidden;
+    }
+    .feat-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--brand), var(--accent));
+      opacity: 0; transition: opacity var(--transition);
+    }
+    .feat-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); border-color: var(--brand); }
+    .feat-card:hover::before { opacity: 1; }
+    .feat-icon {
+      width: 44px; height: 44px; border-radius: var(--radius-lg);
+      background: var(--brand-glow); border: 1px solid rgba(135,90,123,0.3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; margin-bottom: var(--space-4);
+    }
+    .feat-card h3 { font-size: var(--text-sm); font-weight: 700; margin-bottom: var(--space-2); color: var(--color-text); }
+    .feat-card p { font-size: var(--text-xs); color: var(--color-text-muted); line-height: 1.6; }
+
+    /* ── WORKFLOW ────────────────────────────────────────────────── */
+    .workflow-section { background: var(--color-bg); }
+    .workflow-track {
+      display: flex; align-items: center; flex-wrap: wrap;
+      gap: 0; margin-block: var(--space-8);
+      background: var(--color-surface); border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl); padding: var(--space-4) var(--space-5);
+      overflow: hidden;
+    }
+    .wf-step {
+      display: flex; align-items: center; gap: var(--space-2);
+      padding: var(--space-2) var(--space-4); border-radius: var(--radius-lg);
+      font-size: var(--text-xs); font-weight: 700; white-space: nowrap;
+      transition: all var(--transition);
+    }
+    .wf-step.default { background: rgba(135,90,123,0.12); color: var(--brand-light); border: 1px solid rgba(135,90,123,0.25); }
+    .wf-step.success { background: rgba(67,122,34,0.15); color: #6daa45; border: 1px solid rgba(67,122,34,0.3); }
+    .wf-step.warning { background: rgba(218,113,1,0.15); color: #fdab43; border: 1px solid rgba(218,113,1,0.3); }
+    .wf-step.danger  { background: rgba(196,40,40,0.15);  color: #dd6974; border: 1px solid rgba(196,40,40,0.3); }
+    .wf-arrow { color: var(--color-text-faint); font-size: 14px; padding-inline: var(--space-2); flex-shrink: 0; }
+    .wf-split { color: var(--color-text-faint); font-size: var(--text-xs); padding-inline: var(--space-2); }
+
+    .alert-card {
+      background: var(--color-surface-card);
+      border: 1px solid var(--color-border);
+      border-left: 4px solid var(--accent);
+      border-radius: var(--radius-lg); padding: var(--space-5) var(--space-6);
+      margin-top: var(--space-6);
+    }
+    .alert-card h4 { font-size: var(--text-sm); font-weight: 700; color: var(--accent); margin-bottom: var(--space-2); }
+    .alert-card p { font-size: var(--text-xs); color: var(--color-text-muted); }
+
+    /* ── ELEMENTS TABLE ──────────────────────────────────────────── */
+    .elements-section { background: var(--color-surface-2); }
+    .elem-table {
+      width: 100%; border-collapse: collapse;
+      font-size: var(--text-xs); border-radius: var(--radius-xl); overflow: hidden;
+      border: 1px solid var(--color-border);
+    }
+    .elem-table thead th {
+      background: var(--brand); color: #fff;
+      padding: var(--space-3) var(--space-4);
+      text-align: left; font-weight: 700; font-size: var(--text-xs);
+      letter-spacing: 0.02em;
+    }
+    .elem-table tbody td {
+      padding: var(--space-3) var(--space-4);
+      border-bottom: 1px solid var(--color-divider);
+      color: var(--color-text);
+    }
+    .elem-table tbody tr:last-child td { border-bottom: none; }
+    .elem-table tbody tr:nth-child(even) td { background: color-mix(in srgb, var(--color-surface) 60%, transparent); }
+    .elem-num { font-weight: 800; color: var(--brand-light); width: 32px; }
+    [data-theme="light"] .elem-table tbody tr:nth-child(even) td { background: rgba(135,90,123,0.04); }
+
+    /* ── SCREENSHOTS ─────────────────────────────────────────────── */
+    .screenshots-section { background: var(--color-bg); }
+    .screenshots-intro { margin-bottom: var(--space-10); }
+    .screenshots-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-6);
+    }
+    .shot-card {
+      background: var(--color-surface-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl); overflow: hidden;
+      transition: all var(--transition);
+      box-shadow: var(--shadow-sm);
+    }
+    .shot-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: var(--brand); }
+    .shot-img-wrap {
+      overflow: hidden; border-bottom: 1px solid var(--color-border);
+      background: #1a1a2e;
+    }
+    .shot-img-wrap img { width: 100%; display: block; transition: transform 0.4s cubic-bezier(0.16,1,0.3,1); }
+    .shot-card:hover .shot-img-wrap img { transform: scale(1.02); }
+    .shot-caption {
+      padding: var(--space-4) var(--space-5);
+      display: flex; align-items: flex-start; gap: var(--space-3);
+    }
+    .shot-num {
+      font-size: var(--text-xs); font-weight: 800; color: var(--brand-light);
+      background: var(--brand-glow); border: 1px solid rgba(135,90,123,0.25);
+      border-radius: var(--radius-full); width: 26px; height: 26px;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px;
+    }
+    .shot-caption p { font-size: var(--text-xs); color: var(--color-text-muted); line-height: 1.5; }
+    .shot-caption strong { display: block; font-size: var(--text-sm); color: var(--color-text); margin-bottom: var(--space-1); }
+
+    /* ── SECURITY TABLE ──────────────────────────────────────────── */
+    .security-section { background: var(--color-surface-2); }
+    .sec-table { width: 100%; border-collapse: collapse; border-radius: var(--radius-xl); overflow: hidden; border: 1px solid var(--color-border); }
+    .sec-table thead th {
+      background: var(--navy-mid); color: #fff;
+      padding: var(--space-3) var(--space-5); text-align: left; font-size: var(--text-xs); font-weight: 700;
+    }
+    .sec-table td { padding: var(--space-4) var(--space-5); border-bottom: 1px solid var(--color-divider); font-size: var(--text-sm); }
+    .sec-table tr:last-child td { border-bottom: none; }
+    .sec-table tr:nth-child(even) td { background: color-mix(in srgb, var(--color-surface) 60%, transparent); }
+    .role-badge {
+      display: inline-block; padding: 0.2rem 0.75rem;
+      border-radius: var(--radius-full); font-size: var(--text-xs); font-weight: 700;
+      background: var(--brand-glow); color: var(--brand-light);
+      border: 1px solid rgba(135,90,123,0.3);
+    }
+
+    /* ── WHATS INCLUDED ──────────────────────────────────────────── */
+    .included-section { background: var(--color-bg); }
+    .included-cols { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-8); }
+    .inc-card {
+      background: var(--color-surface-card); border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl); padding: var(--space-6);
+    }
+    .inc-card h3 {
+      font-size: var(--text-base); font-weight: 700; margin-bottom: var(--space-4);
+      padding-bottom: var(--space-3); border-bottom: 1px solid var(--color-border);
+      color: var(--color-text);
+    }
+    .check-list { list-style: none; display: flex; flex-direction: column; gap: var(--space-2); }
+    .check-list li { display: flex; align-items: flex-start; gap: var(--space-2); font-size: var(--text-sm); color: var(--color-text-muted); }
+    .check-list li::before {
+      content: ''; display: block; width: 16px; height: 16px; border-radius: 50%;
+      background: rgba(109,170,69,0.15); border: 1px solid rgba(109,170,69,0.4);
+      flex-shrink: 0; margin-top: 3px;
+      background-image: url("data:image/svg+xml,%3Csvg width='10' height='10' viewBox='0 0 10 10' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M2 5l2.5 2.5L8 3' stroke='%236daa45' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: center;
+    }
+
+    /* ── TECH SPECS ──────────────────────────────────────────────── */
+    .tech-section { background: var(--color-surface-2); }
+    .tech-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-3); }
+    .tech-row {
+      display: flex; align-items: center; gap: var(--space-3);
+      background: var(--color-surface-card); border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg); padding: var(--space-3) var(--space-4);
+    }
+    .tech-key { font-size: var(--text-xs); color: var(--color-text-muted); min-width: 130px; flex-shrink: 0; }
+    .tech-val { font-size: var(--text-xs); font-weight: 600; color: var(--color-text); }
+    .tech-val code { font-family: 'SF Mono', 'Fira Code', monospace; color: var(--brand-light); background: var(--brand-glow); padding: 0.1rem 0.4rem; border-radius: var(--radius-sm); }
+
+    /* ── CTA BANNER ──────────────────────────────────────────────── */
+    /* ── CONTACT FORM ─────────────────────────────────────────── */
+    .contact-section { background: var(--color-bg); }
+    .contact-wrap {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(var(--space-8), 6vw, var(--space-16));
+      align-items: start;
+    }
+    @media (max-width: 720px) { .contact-wrap { grid-template-columns: 1fr; } }
+    .contact-info-label { font-size: var(--text-xs); font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: var(--brand-light); margin-bottom: var(--space-3); }
+    .contact-info-title { font-size: var(--text-2xl); font-weight: 800; line-height: 1.2; margin-bottom: var(--space-4); }
+    .contact-info-body { font-size: var(--text-base); color: var(--color-text-muted); line-height: 1.7; margin-bottom: var(--space-6); }
+    .contact-bullets { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: var(--space-3); }
+    .contact-bullets li { display: flex; align-items: center; gap: var(--space-2); font-size: var(--text-sm); color: var(--color-text-muted); }
+    .contact-bullets li::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--brand-light); flex-shrink: 0; }
+    .contact-form-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      padding: clamp(var(--space-6), 4vw, var(--space-10));
+    }
+    .form-row { margin-bottom: var(--space-5); }
+    .form-row label { display: block; font-size: var(--text-sm); font-weight: 600; margin-bottom: var(--space-2); color: var(--color-text); }
+    .form-row input, .form-row textarea {
+      width: 100%; box-sizing: border-box;
+      background: var(--color-surface-2);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: 0.65rem 0.9rem;
+      font: inherit;
+      font-size: var(--text-sm);
+      color: var(--color-text);
+      transition: border-color var(--transition), box-shadow var(--transition);
+      outline: none;
+    }
+    .form-row input:focus, .form-row textarea:focus {
+      border-color: var(--brand-light);
+      box-shadow: 0 0 0 3px rgba(135,90,123,0.18);
+    }
+    .form-row textarea { resize: vertical; min-height: 90px; }
+    .form-submit {
+      width: 100%;
+      padding: 0.75rem 1.5rem;
+      background: var(--brand);
+      color: #fff;
+      font-weight: 700;
+      font-size: var(--text-sm);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      border: none;
+      transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
+      letter-spacing: .02em;
+    }
+    .form-submit:hover:not(:disabled) { background: var(--brand-light); transform: translateY(-1px); box-shadow: 0 6px 24px rgba(135,90,123,0.4); }
+    .form-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+    .form-msg { margin-top: var(--space-4); padding: var(--space-3) var(--space-4); border-radius: var(--radius-md); font-size: var(--text-sm); display: none; }
+    .form-msg.success { background: rgba(34,197,94,0.12); border: 1px solid rgba(34,197,94,0.3); color: #4ade80; display: block; }
+    .form-msg.error { background: rgba(239,68,68,0.12); border: 1px solid rgba(239,68,68,0.3); color: #f87171; display: block; }
+
+    .cta-section {
+      background: linear-gradient(135deg, var(--navy-deep) 0%, #1a1a40 50%, #1a1020 100%);
+      position: relative; overflow: hidden; text-align: center;
+    }
+    .cta-section::before {
+      content: ''; position: absolute; inset: 0; pointer-events: none;
+      background: radial-gradient(ellipse 70% 80% at 50% 50%, rgba(135,90,123,0.15) 0%, transparent 70%);
+    }
+    .cta-inner { position: relative; z-index: 2; }
+    .cta-title { font-size: var(--text-2xl); font-weight: 800; color: #fff; margin-bottom: var(--space-4); }
+    .cta-sub { font-size: var(--text-base); color: #9ba8bb; margin-bottom: var(--space-8); max-width: 50ch; margin-inline: auto; }
+    .cta-actions { display: flex; align-items: center; justify-content: center; gap: var(--space-4); flex-wrap: wrap; }
+    .btn-cta {
+      display: inline-flex; align-items: center; gap: var(--space-2);
+      padding: 0.75rem 2rem; border-radius: var(--radius-full);
+      font-size: var(--text-base); font-weight: 700;
+      background: linear-gradient(135deg, var(--brand) 0%, var(--accent) 100%);
+      color: #fff; box-shadow: 0 4px 24px rgba(135,90,123,0.45);
+      transition: all var(--transition);
+    }
+    .btn-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(135,90,123,0.55); }
+    .btn-ghost {
+      display: inline-flex; align-items: center; gap: var(--space-2);
+      padding: 0.75rem 2rem; border-radius: var(--radius-full);
+      font-size: var(--text-base); font-weight: 600; color: #c5ccd8;
+      border: 1px solid rgba(255,255,255,0.15); transition: all var(--transition);
+    }
+    .btn-ghost:hover { border-color: rgba(255,255,255,0.4); color: #fff; }
+
+    /* ── FOOTER ──────────────────────────────────────────────────── */
+    .site-footer {
+      background: var(--color-surface); border-top: 1px solid var(--color-border);
+      padding-block: var(--space-8);
+    }
+    .footer-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: var(--space-4);
+      max-width: var(--content); margin-inline: auto;
+      padding-inline: clamp(var(--space-4), 5vw, var(--space-10));
+    }
+    .footer-left { font-size: var(--text-xs); color: var(--color-text-muted); }
+    .footer-left strong { color: var(--color-text); }
+    .footer-links { display: flex; gap: var(--space-5); }
+    .footer-links a { font-size: var(--text-xs); color: var(--color-text-muted); transition: color var(--transition); }
+    .footer-links a:hover { color: var(--brand-light); }
+
+    /* ── RESPONSIVE ──────────────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .features-grid { grid-template-columns: repeat(2, 1fr); }
+      .screenshots-grid { grid-template-columns: 1fr; }
+      .included-cols { grid-template-columns: 1fr; }
+      .tech-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 640px) {
+      .features-grid { grid-template-columns: 1fr; }
+      .nav-links { display: none; }
+      .stats-inner { justify-content: center; }
+      .stat-item { border-right: none; border-bottom: 1px solid var(--color-border); min-width: 50%; }
+      .stat-item:nth-child(odd) { border-right: 1px solid var(--color-border); }
+      .stat-item:last-child { border-bottom: none; }
+      .workflow-track { gap: var(--space-1); padding: var(--space-3); }
+      .wf-arrow { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── HEADER ───────────────────────────────────────────────────── -->
+<header class="site-header" id="site-header">
+  <nav class="nav-inner">
+    <!-- Logo: PPAP gear/chain mark -->
+    <a href="#" class="nav-logo">
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-label="PPAP Workflow logo">
+        <rect width="32" height="32" rx="8" fill="#875a7b"/>
+        <!-- Gear shape -->
+        <path d="M16 8a8 8 0 100 16A8 8 0 0016 8zm0 12a4 4 0 110-8 4 4 0 010 8z" fill="rgba(255,255,255,0.9)"/>
+        <!-- Teeth -->
+        <rect x="14.5" y="4" width="3" height="5" rx="1" fill="rgba(255,255,255,0.9)"/>
+        <rect x="14.5" y="23" width="3" height="5" rx="1" fill="rgba(255,255,255,0.9)"/>
+        <rect x="4" y="14.5" width="5" height="3" rx="1" fill="rgba(255,255,255,0.9)"/>
+        <rect x="23" y="14.5" width="5" height="3" rx="1" fill="rgba(255,255,255,0.9)"/>
+        <rect x="7.05" y="7.05" width="3.5" height="3.5" rx="1" transform="rotate(45 8.75 8.75)" fill="rgba(255,255,255,0.9)"/>
+        <rect x="21.5" y="21.5" width="3.5" height="3.5" rx="1" transform="rotate(45 23.25 23.25)" fill="rgba(255,255,255,0.9)"/>
+        <rect x="7.05" y="21.5" width="3.5" height="3.5" rx="1" transform="rotate(-45 8.75 23.25)" fill="rgba(255,255,255,0.9)"/>
+        <rect x="21.5" y="7.05" width="3.5" height="3.5" rx="1" transform="rotate(-45 23.25 8.75)" fill="rgba(255,255,255,0.9)"/>
+      </svg>
+      PPAP Workflow
+    </a>
+
+    <ul class="nav-links">
+      <li><a href="#modules">Modules</a></li>
+      <li><a href="#features">Features</a></li>
+      <li><a href="#workflow">Workflow</a></li>
+      <li><a href="#screenshots">Screenshots</a></li>
+      <li><a href="#elements">18 Elements</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+
+    <div class="nav-actions">
+      <button class="theme-toggle" data-theme-toggle aria-label="Toggle dark mode">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+      <!-- Modules dropdown -->
+      <div class="nav-modules-wrap" id="nav-modules-wrap">
+        <button class="nav-modules-btn" id="nav-modules-btn" aria-haspopup="true" aria-expanded="false">
+          Get Module
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="nav-modules-dropdown" role="menu">
+          <a href="https://apps.odoo.com/apps/modules/19.0/ppap_workflow" target="_blank" rel="noopener" class="nav-mod-item" role="menuitem">
+            <span class="nav-mod-badge automotive">Automotive</span>
+            <div>
+              <div class="nav-mod-title">PPAP Workflow</div>
+              <div class="nav-mod-desc">AIAG PPAP-4 &middot; 18 Elements &middot; PSW &middot; SPC &middot; MSA</div>
+              <div class="nav-mod-price">$349 &mdash; Odoo Apps Store &rarr;</div>
+            </div>
+          </a>
+          <a href="https://apps.odoo.com/apps/modules/19.0/ppap_common" target="_blank" rel="noopener" class="nav-mod-item" role="menuitem">
+            <span class="nav-mod-badge multi">Multi-Industry</span>
+            <div>
+              <div class="nav-mod-title">PPAP Manager</div>
+              <div class="nav-mod-desc">Automotive &middot; Aerospace &middot; Medical &middot; General Mfg</div>
+              <div class="nav-mod-price">$499 &mdash; Odoo Apps Store &rarr;</div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<!-- ── HERO ──────────────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="container hero-inner">
+    <div class="hero-badge">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><circle cx="6" cy="6" r="4"/></svg>
+      Odoo 19 Native · Two PPAP Modules Available
+    </div>
+    <h1 class="hero-title">
+      PPAP Modules for <em>Odoo 19</em><br>by Navabrind IT Solutions
+    </h1>
+    <p class="hero-sub">
+      Two purpose-built PPAP modules — Automotive AIAG PPAP-4 specialist
+      or full Multi-Industry support across Automotive, Aerospace, Medical &amp; General Manufacturing.
+    </p>
+    <div class="hero-chips">
+      <span class="chip highlight">AIAG PPAP-4</span>
+      <span class="chip highlight">Multi-Industry</span>
+      <span class="chip">PSW + PDF Reports</span>
+      <span class="chip">Cp / Cpk / Pp / Ppk</span>
+      <span class="chip">MSA / Gauge R&amp;R</span>
+      <span class="chip">Odoo.sh Compatible</span>
+      <span class="chip">Demo Data Included</span>
+      <span class="chip">OPL-1 License</span>
+    </div>
+    <div class="hero-cta">
+      <a href="#modules" class="btn btn-primary" style="padding:0.7rem 1.75rem; font-size:var(--text-base);">
+        View Modules
+      </a>
+      <a href="#contact" class="btn btn-outline" style="padding:0.7rem 1.75rem; font-size:var(--text-base);">
+        Contact for Purchase
+      </a>
+      <a href="https://www.navabrindsol.com" target="_blank" rel="noopener" class="btn btn-outline" style="color:#c5ccd8;border-color:rgba(255,255,255,0.2);">
+        navabrindsol.com ↗
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ── STATS STRIP ─────────────────────────────────────────────── -->
+<div class="stats-strip">
+  <div class="stats-inner">
+    <div class="stat-item"><div class="stat-num">18</div><div class="stat-label">PPAP Elements</div></div>
+    <div class="stat-item"><div class="stat-num">8</div><div class="stat-label">Approval Stages</div></div>
+    <div class="stat-item"><div class="stat-num">12</div><div class="stat-label">Data Models</div></div>
+    <div class="stat-item"><div class="stat-num">30</div><div class="stat-label">Samples / Dimension</div></div>
+    <div class="stat-item"><div class="stat-num">4</div><div class="stat-label">Security Roles</div></div>
+    <div class="stat-item"><div class="stat-num">19.0</div><div class="stat-label">Odoo Version</div></div>
+  </div>
+</div>
+
+<!-- ── MODULES ──────────────────────────────────────────────────── -->
+<section class="modules-section section" id="modules">
+  <div class="container">
+    <div class="section-header">
+      <p class="section-label">Choose Your Module</p>
+      <h2 class="section-title">Two PPAP Modules for Odoo 19</h2>
+      <p class="section-sub">Pick the module that fits your industry and workflow complexity. Both are native to Odoo 19, fully supported, and available on the Odoo Apps Store.</p>
+    </div>
+    <div class="modules-grid">
+
+      <!-- Card 1: PPAP Workflow -->
+      <div class="module-card">
+        <span class="mod-tag automotive">Automotive Specialist</span>
+        <h3 class="mod-title">PPAP Workflow</h3>
+        <p class="mod-subtitle">Built strictly to the AIAG PPAP-4 standard. The most complete automotive PPAP implementation for Odoo 19 — all 18 elements, PSW, SPC, MSA, Dimensional Results and full approval workflows.</p>
+        <div class="mod-price-row">
+          <span class="mod-price">$349</span>
+          <span class="mod-price-note">one-time licence &middot; OPL-1</span>
+        </div>
+        <ul class="mod-bullets">
+          <li>All 18 AIAG PPAP-4 elements</li>
+          <li>Part Submission Warrant (PSW) with PDF</li>
+          <li>SPC — Cp, Cpk, Pp, Ppk calculations</li>
+          <li>MSA / Gauge R&amp;R Analysis</li>
+          <li>Dimensional Results (30 samples/dimension)</li>
+          <li>Material &amp; Performance Test Records</li>
+          <li>Appearance Approval Report (AAR)</li>
+          <li>4 Role-based security levels</li>
+          <li>Help &amp; Guide menu built-in</li>
+          <li>Upgrade path to PPAP Manager</li>
+        </ul>
+        <div class="mod-actions">
+          <a href="https://apps.odoo.com/apps/modules/19.0/ppap_workflow" target="_blank" rel="noopener" class="btn-buy">
+            Buy on Odoo Apps Store &rarr; $349
+          </a>
+          <a href="#contact" class="btn-buy-outline">Contact for Purchase / Demo</a>
+        </div>
+      </div>
+
+      <!-- Card 2: PPAP Manager (featured) -->
+      <div class="module-card featured">
+        <span class="mod-tag multi">Multi-Industry Premium</span>
+        <h3 class="mod-title">PPAP Manager</h3>
+        <p class="mod-subtitle">Everything in PPAP Workflow, extended for four industries. Select your industry at runtime — Automotive (AIAG PPAP-4), Aerospace (AS9102), Medical Device (ISO 13485), or General Manufacturing.</p>
+        <div class="mod-price-row">
+          <span class="mod-price">$499</span>
+          <span class="mod-price-note">one-time licence &middot; OPL-1</span>
+        </div>
+        <ul class="mod-bullets">
+          <li class="featured-bullet">All PPAP Workflow features included</li>
+          <li class="featured-bullet">4 Industry profiles — select at submission</li>
+          <li class="featured-bullet">Aerospace AS9102 First Article Inspection</li>
+          <li class="featured-bullet">Medical Device ISO 13485 records</li>
+          <li class="featured-bullet">General Manufacturing baseline profile</li>
+          <li class="featured-bullet">Industry-specific checklists &amp; templates</li>
+          <li class="featured-bullet">Extended dashboard with industry KPIs</li>
+          <li class="featured-bullet">Demo data for all 4 industries</li>
+          <li class="featured-bullet">PDF reports per industry standard</li>
+          <li class="featured-bullet">Odoo.sh &amp; on-premise compatible</li>
+        </ul>
+        <div class="mod-actions">
+          <a href="https://apps.odoo.com/apps/modules/19.0/ppap_common" target="_blank" rel="noopener" class="btn-buy featured-buy">
+            Buy on Odoo Apps Store &rarr; $499
+          </a>
+          <a href="#contact" class="btn-buy-outline">Contact for Purchase / Demo</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── FEATURES ───────────────────────────────────────────────── -->
+<section class="features-section" id="features">
+  <div class="container">
+    <div class="section-header">
+      <p class="section-label">Capabilities</p>
+      <h2 class="section-title">Everything PPAP Requires</h2>
+      <p class="section-sub">Built to the AIAG PPAP 4th Edition standard. Every element, form, and calculation your quality team needs.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feat-card">
+        <div class="feat-icon">📋</div>
+        <h3>18-Element Lifecycle</h3>
+        <p>All AIAG PPAP-4 elements auto-created per submission. Track completion status, responsible engineer, and due date for every element individually.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">📄</div>
+        <h3>Part Submission Warrant</h3>
+        <p>Full PSW form with element disposition (Included / N/A / Retained), sample quantities, tooling number, and customer approval signatures with printable PDF.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">📐</div>
+        <h3>Dimensional Results</h3>
+        <p>Up to 30 samples per characteristic. Auto-calculated Mean, Range, and Standard Deviation. Pass/Fail result per characteristic with visual highlights.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">📊</div>
+        <h3>Process Capability (SPC)</h3>
+        <p>Cp, Cpk, Pp, Ppk automatically computed from measurement values. Full and preliminary study types. Capable/Not-Capable flag with configurable thresholds.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🔬</div>
+        <h3>MSA / Gauge R&amp;R</h3>
+        <p>Measurement System Analysis with repeatability, reproducibility, and Number of Distinct Categories (NDC). Auto-acceptability classification per AIAG MSA.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🧪</div>
+        <h3>Material &amp; Performance Tests</h3>
+        <p>Test results with lab name, test standard, specification, actual result, and Pass/Fail/Conditional decision. Supports chemical, mechanical, and functional tests.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🗂️</div>
+        <h3>Control Plans</h3>
+        <p>Prototype, Pre-launch, and Production phase control plans. Characteristic types (product/process), control methods, reaction plans, and sample frequency.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🔧</div>
+        <h3>Engineering Changes</h3>
+        <p>Full ECR/ECN lifecycle — drawing number, revision level, description, implementation date, and status tracking linked directly to the PPAP submission.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">📈</div>
+        <h3>Analytics &amp; Dashboard</h3>
+        <p>Live KPI dashboard with approval rates, overdue counts, and interim expiry alerts. Pivot, Graph, and Kanban views available on all major models.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── WORKFLOW ────────────────────────────────────────────────── -->
+<section class="workflow-section" id="workflow">
+  <div class="container">
+    <div class="section-header">
+      <p class="section-label">Approval Pipeline</p>
+      <h2 class="section-title">8-Stage Approval Workflow</h2>
+      <p class="section-sub">A structured, traceable lifecycle — from initial draft through full customer approval or rejection.</p>
+    </div>
+    <div class="workflow-track">
+      <span class="wf-step default">Draft</span>
+      <span class="wf-arrow">→</span>
+      <span class="wf-step default">Internal Review</span>
+      <span class="wf-arrow">→</span>
+      <span class="wf-step default">Quality Review</span>
+      <span class="wf-arrow">→</span>
+      <span class="wf-step default">Ready for Submission</span>
+      <span class="wf-arrow">→</span>
+      <span class="wf-step default">Submitted</span>
+      <span class="wf-arrow">→</span>
+      <span class="wf-split">then:</span>
+      <span class="wf-step warning">Interim Approval</span>
+      <span class="wf-split">/</span>
+      <span class="wf-step success">Full Approval</span>
+      <span class="wf-split">/</span>
+      <span class="wf-step danger">Rejected</span>
+    </div>
+    <div class="alert-card">
+      <h4>Interim Approval Expiry Tracking</h4>
+      <p>Submissions with interim approval automatically trigger overdue alerts via scheduled cron jobs when the expiry date approaches. A resubmission counter tracks how many times a part has been rejected and resubmitted.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── SCREENSHOTS ────────────────────────────────────────────── -->
+<section class="screenshots-section" id="screenshots">
+  <div class="container">
+    <div class="section-header screenshots-intro">
+      <p class="section-label">Screenshots</p>
+      <h2 class="section-title">See It in Action</h2>
+      <p class="section-sub">Real UI mockups showing the full scope of the module — from submission lists to SPC capability charts and PDF reports.</p>
+    </div>
+    <div class="screenshots-grid">
+
+      <div class="shot-card">
+        <div class="shot-img-wrap"><img src="screenshots/01_submissions_list.png" alt="PPAP Submissions List View" loading="lazy" /></div>
+        <div class="shot-caption">
+          <div class="shot-num">01</div>
+          <div><strong>Submissions List View</strong><p>All submissions in a sortable list with status badges (Full Approval, Rejected, Interim, Submitted), progress bars, and customer/part details.</p></div>
+        </div>
+      </div>
+
+      <div class="shot-card">
+        <div class="shot-img-wrap"><img src="screenshots/02_submission_form.png" alt="PPAP Submission Form" loading="lazy" /></div>
+        <div class="shot-caption">
+          <div class="shot-num">02</div>
+          <div><strong>Submission Form</strong><p>Full form view with 8-stage statusbar, 9 smart stat buttons (PSW, Dimensional, Tests…), field groups, and the PPAP Elements tab.</p></div>
+        </div>
+      </div>
+
+      <div class="shot-card">
+        <div class="shot-img-wrap"><img src="screenshots/03_kanban_view.png" alt="PPAP Kanban Board" loading="lazy" /></div>
+        <div class="shot-caption">
+          <div class="shot-num">03</div>
+          <div><strong>Kanban Pipeline View</strong><p>7-column Kanban board showing submissions by stage. Overdue badges, customer avatars, and PPAP level chips on each card.</p></div>
+        </div>
+      </div>
+
+      <div class="shot-card">
+        <div class="shot-img-wrap"><img src="screenshots/04_psw_form.png" alt="Part Submission Warrant Form" loading="lazy" /></div>
+        <div class="shot-caption">
+          <div class="shot-num">04</div>
+          <div><strong>Part Submission Warrant (PSW)</strong><p>Complete PSW with 18-element disposition table (Included / N/A), production info, and the supplier authorization / customer approval section.</p></div>
+        </div>
+      </div>
+
+      <div class="shot-card">
+        <div class="shot-img-wrap"><img src="screenshots/05_dimensional.png" alt="Dimensional Results Entry" loading="lazy" /></div>
+        <div class="shot-caption">
+          <div class="shot-num">05</div>
+          <div><strong>Dimensional Results</strong><p>Multi-sample results table with LSL/Target/USL, 5 sample columns, auto-calculated Mean and σ, and per-characteristic Pass/Fail with red row highlighting.</p></div>
+        </div>
+      </div>
+
+      <div class="shot-card">
+        <div class="shot-img-wrap"><img src="screenshots/06_process_study.png" alt="Process Capability SPC Study" loading="lazy" /></div>
+        <div class="shot-caption">
+          <div class="shot-num">06</div>
+          <div><strong>Process Capability (SPC)</strong><p>KPI cards for Cp=1.67, Cpk=1.58, Pp=1.51, Ppk=1.44 with capable/not-capable threshold indicators and a green "CAPABLE" result box.</p></div>
+        </div>
+      </div>
+
+      <div class="shot-card">
+        <div class="shot-img-wrap"><img src="screenshots/07_dashboard.png" alt="PPAP Analytics Dashboard" loading="lazy" /></div>
+        <div class="shot-caption">
+          <div class="shot-num">07</div>
+          <div><strong>Analytics Dashboard</strong><p>5 KPI cards (Total, Approval Rate, Pending, Overdue, Interim) plus bar chart by state and horizontal bar by customer.</p></div>
+        </div>
+      </div>
+
+      <div class="shot-card">
+        <div class="shot-img-wrap"><img src="screenshots/08_psw_report.png" alt="PSW PDF Report" loading="lazy" /></div>
+        <div class="shot-caption">
+          <div class="shot-num">08</div>
+          <div><strong>PSW PDF Report</strong><p>Professional printable Part Submission Warrant with company header, part info grid, 18-element disposition table, and approval sign-off section.</p></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── 18 ELEMENTS TABLE ──────────────────────────────────────── -->
+<section class="elements-section" id="elements">
+  <div class="container">
+    <div class="section-header">
+      <p class="section-label">AIAG PPAP-4</p>
+      <h2 class="section-title">All 18 PPAP Elements</h2>
+      <p class="section-sub">Every element is auto-created for each new PPAP submission with its own form, status, responsible user, and due date.</p>
+    </div>
+    <table class="elem-table">
+      <thead>
+        <tr><th>#</th><th>PPAP Element</th><th>#</th><th>PPAP Element</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="elem-num">1</td><td>Design Records</td><td class="elem-num">10</td><td>Material / Performance Test Results</td></tr>
+        <tr><td class="elem-num">2</td><td>Engineering Change Documents</td><td class="elem-num">11</td><td>Initial Process Studies (Cp, Cpk, Pp, Ppk)</td></tr>
+        <tr><td class="elem-num">3</td><td>Customer Engineering Approval</td><td class="elem-num">12</td><td>Qualified Laboratory Documentation</td></tr>
+        <tr><td class="elem-num">4</td><td>Design FMEA</td><td class="elem-num">13</td><td>Appearance Approval Report (AAR)</td></tr>
+        <tr><td class="elem-num">5</td><td>Process Flow Diagram</td><td class="elem-num">14</td><td>Sample Production Parts</td></tr>
+        <tr><td class="elem-num">6</td><td>Process FMEA</td><td class="elem-num">15</td><td>Master Sample</td></tr>
+        <tr><td class="elem-num">7</td><td>Control Plan</td><td class="elem-num">16</td><td>Checking Aids</td></tr>
+        <tr><td class="elem-num">8</td><td>Measurement System Analysis (MSA)</td><td class="elem-num">17</td><td>Customer-Specific Requirements</td></tr>
+        <tr><td class="elem-num">9</td><td>Dimensional Results (up to 30 samples)</td><td class="elem-num">18</td><td>Part Submission Warrant (PSW)</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ── ROLE-BASED SECURITY ────────────────────────────────────── -->
+<section class="security-section" id="security">
+  <div class="container">
+    <div class="section-header">
+      <p class="section-label">Access Control</p>
+      <h2 class="section-title">Role-Based Security</h2>
+      <p class="section-sub">Four access groups cover every user type from shop floor to quality management.</p>
+    </div>
+    <table class="sec-table">
+      <thead><tr><th>Role</th><th>Permissions</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><span class="role-badge">PPAP User</span></td>
+          <td>Read own submissions; create and edit dimensional results, material tests, and process studies</td>
+        </tr>
+        <tr>
+          <td><span class="role-badge">PPAP Coordinator</span></td>
+          <td>Full CRUD on submissions and all sub-records; manage PPAP elements and assign tasks</td>
+        </tr>
+        <tr>
+          <td><span class="role-badge">PPAP Quality Manager</span></td>
+          <td>Approve / reject / send submissions; access all records and generate reports</td>
+        </tr>
+        <tr>
+          <td><span class="role-badge">PPAP Manager</span></td>
+          <td>Full admin access including module configuration and customer portal management</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ── WHAT'S INCLUDED ────────────────────────────────────────── -->
+<section class="included-section" id="included">
+  <div class="container">
+    <div class="section-header">
+      <p class="section-label">Package Contents</p>
+      <h2 class="section-title">What's Included</h2>
+    </div>
+    <div class="included-cols">
+      <div class="inc-card">
+        <h3>12 Data Models</h3>
+        <ul class="check-list">
+          <li>PPAP Submission</li>
+          <li>PPAP Element</li>
+          <li>Part Submission Warrant (PSW)</li>
+          <li>Control Plan</li>
+          <li>Dimensional Results</li>
+          <li>Process Study (SPC)</li>
+          <li>Material &amp; Performance Test</li>
+          <li>MSA / Gauge R&amp;R</li>
+          <li>Engineering Change (ECR/ECN)</li>
+          <li>Appearance Approval Report (AAR)</li>
+          <li>Sample Part</li>
+          <li>PPAP Configuration Settings</li>
+        </ul>
+      </div>
+      <div class="inc-card">
+        <h3>Reports, Tools &amp; Extras</h3>
+        <ul class="check-list">
+          <li>Part Submission Warrant PDF</li>
+          <li>Submission Summary PDF</li>
+          <li>Bulk element completion wizard</li>
+          <li>Resubmission / rejection wizard</li>
+          <li>Overdue alert cron job</li>
+          <li>Interim expiry cron job</li>
+          <li>Email notification templates</li>
+          <li>Customer portal views</li>
+          <li>Dashboard with live KPIs</li>
+          <li>Kanban, Pivot, and Graph views</li>
+          <li>10 realistic demo records</li>
+          <li>Full Odoo 19 native compatibility</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── TECHNICAL DETAILS ──────────────────────────────────────── -->
+<section class="tech-section" id="technical">
+  <div class="container">
+    <div class="section-header">
+      <p class="section-label">Technical</p>
+      <h2 class="section-title">Technical Details</h2>
+    </div>
+    <div class="tech-grid">
+      <div class="tech-row"><span class="tech-key">Technical Name</span><span class="tech-val"><code>ppap_workflow</code></span></div>
+      <div class="tech-row"><span class="tech-key">Version</span><span class="tech-val"><code>19.0.2.0.0</code></span></div>
+      <div class="tech-row"><span class="tech-key">License</span><span class="tech-val"><code>OPL-1</code> — Odoo Proprietary</span></div>
+      <div class="tech-row"><span class="tech-key">Odoo Version</span><span class="tech-val">19.0 (Community &amp; Enterprise)</span></div>
+      <div class="tech-row"><span class="tech-key">Category</span><span class="tech-val">Supply Chain / Manufacturing</span></div>
+      <div class="tech-row"><span class="tech-key">Dependencies</span><span class="tech-val"><code>base, mail, product, mrp, portal, web</code></span></div>
+      <div class="tech-row"><span class="tech-key">Hosting</span><span class="tech-val">Odoo.sh, On-Premise, Odoo Community</span></div>
+      <div class="tech-row"><span class="tech-key">Price</span><span class="tech-val" style="color:var(--accent);font-size:var(--text-base);font-weight:800;">$349 USD</span></div>
+    </div>
+    <div class="alert-card" style="border-left-color:var(--brand);margin-top:var(--space-6);">
+      <h4 style="color:var(--brand-light);">Odoo 19 Native — Zero Deprecated APIs</h4>
+      <p>Fully rebuilt for Odoo 19. Kanban uses <code style="font-family:monospace;color:var(--brand-light)">t-name="card"</code>, search views use correct RelaxNG schema, QWeb reports use Odoo 19-compatible expressions. No enterprise or optional module dependencies.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── CONTACT FORM ───────────────────────────────────────────── -->
+<section class="contact-section" id="contact">
+  <div class="container">
+    <div class="contact-wrap">
+
+      <!-- Left: info -->
+      <div>
+        <p class="contact-info-label">Get in Touch</p>
+        <h2 class="contact-info-title">Interested in a PPAP Module?</h2>
+        <p class="contact-info-body">Tell us which module you need and our team at Navabrind IT Solutions will get back to you within 1 business day with pricing, a demo, and installation support options.</p>
+        <ul class="contact-bullets">
+          <li>PPAP Workflow — Automotive AIAG PPAP-4 &middot; $349</li>
+          <li>PPAP Manager — Multi-Industry (4 profiles) &middot; $499</li>
+          <li>One-time licence &middot; OPL-1 &middot; Odoo 19</li>
+          <li>Compatible with Community &amp; Enterprise</li>
+          <li>Installation &amp; configuration support included</li>
+          <li>Odoo.sh &amp; on-premise ready</li>
+        </ul>
+      </div>
+
+      <!-- Right: form -->
+      <div class="contact-form-card">
+        <form id="ppap-contact-form" novalidate>
+          <div class="form-row">
+            <label for="cf-name">Full Name <span style="color:#f87171">*</span></label>
+            <input type="text" id="cf-name" name="name" placeholder="e.g. John Smith" required autocomplete="name" />
+          </div>
+          <div class="form-row">
+            <label for="cf-email">Work Email <span style="color:#f87171">*</span></label>
+            <input type="email" id="cf-email" name="email" placeholder="john@company.com" required autocomplete="email" />
+          </div>
+          <div class="form-row">
+            <label for="cf-company">Company Name <span style="color:#f87171">*</span></label>
+            <input type="text" id="cf-company" name="company" placeholder="Your company" required autocomplete="organization" />
+          </div>
+          <div class="form-row">
+            <label for="cf-module">Module of Interest <span style="color:#f87171">*</span></label>
+            <select id="cf-module" name="module" required>
+              <option value="" disabled selected>Select a module…</option>
+              <option value="ppap_workflow">PPAP Workflow — Automotive AIAG PPAP-4 ($349)</option>
+              <option value="ppap_common">PPAP Manager — Multi-Industry Premium ($499)</option>
+              <option value="both">Both Modules — Interested in comparing</option>
+              <option value="other">Other / Not sure yet</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <label for="cf-message">Message <span style="color:var(--color-text-muted);font-weight:400">(optional)</span></label>
+            <textarea id="cf-message" name="message" placeholder="Tell us about your industry, number of users, or any specific requirements…"></textarea>
+          </div>
+          <button type="submit" class="form-submit" id="cf-submit">Send Enquiry →</button>
+          <div class="form-msg" id="cf-msg"></div>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA ────────────────────────────────────────────────────── -->
+<section class="cta-section">
+  <div class="container cta-inner" style="padding-block:clamp(4rem,8vw,7rem);">
+    <h2 class="cta-title">Ready to Streamline Your PPAP Process?</h2>
+    <p class="cta-sub">Two modules, both native to Odoo 19. Pick the right one for your industry and get started today.</p>
+    <div class="cta-actions">
+      <a href="https://apps.odoo.com/apps/modules/19.0/ppap_workflow" target="_blank" rel="noopener" class="btn-cta" style="background:linear-gradient(135deg,#875a7b 0%,#a97099 100%)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        PPAP Workflow &mdash; $349
+      </a>
+      <a href="https://apps.odoo.com/apps/modules/19.0/ppap_common" target="_blank" rel="noopener" class="btn-cta" style="background:linear-gradient(135deg,#0284c7 0%,#0ea5e9 100%);box-shadow:0 4px 24px rgba(14,165,233,0.4)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        PPAP Manager &mdash; $499
+      </a>
+      <a href="#contact" class="btn-ghost">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        Contact Us
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ──────────────────────────────────────────────────── -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-left">
+      <strong>PPAP Modules for Odoo 19</strong> — by
+      <a href="https://www.navabrindsol.com" style="color:var(--brand-light)">Navabrind IT Solutions</a>
+      &nbsp;·&nbsp; Odoo 19.0 &nbsp;·&nbsp; OPL-1 Licence
+    </div>
+    <nav class="footer-links">
+      <a href="https://apps.odoo.com/apps/modules/19.0/ppap_workflow" target="_blank" rel="noopener">PPAP Workflow $349</a>
+      <a href="https://apps.odoo.com/apps/modules/19.0/ppap_common" target="_blank" rel="noopener">PPAP Manager $499</a>
+      <a href="#contact">Contact Us</a>
+      <a href="https://www.navabrindsol.com" target="_blank" rel="noopener">navabrindsol.com</a>
+    </nav>
+  </div>
+</footer>
+
+<!-- ── SCRIPTS ────────────────────────────────────────────────── -->
+<script>
+  // Dark/light toggle
+  (function () {
+    const html = document.documentElement;
+    const btn = document.querySelector('[data-theme-toggle]');
+    // default: dark
+    let theme = 'dark';
+    html.setAttribute('data-theme', theme);
+
+    function setIcon(t) {
+      if (!btn) return;
+      btn.innerHTML = t === 'dark'
+        ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>'
+        : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+    }
+    setIcon(theme);
+
+    btn && btn.addEventListener('click', () => {
+      theme = theme === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', theme);
+      setIcon(theme);
+      btn.setAttribute('aria-label', 'Switch to ' + (theme === 'dark' ? 'light' : 'dark') + ' mode');
+    });
+  })();
+
+  // Sticky header shadow on scroll
+  const header = document.getElementById('site-header');
+  window.addEventListener('scroll', () => {
+    header.classList.toggle('scrolled', window.scrollY > 10);
+  }, { passive: true });
+
+  // ── Nav Modules dropdown toggle ────────────────────────────────
+  (function () {
+    const wrap = document.getElementById('nav-modules-wrap');
+    const btn  = document.getElementById('nav-modules-btn');
+    if (!wrap || !btn) return;
+
+    btn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      const open = wrap.classList.toggle('open');
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+
+    document.addEventListener('click', function (e) {
+      if (!wrap.contains(e.target)) {
+        wrap.classList.remove('open');
+        btn.setAttribute('aria-expanded', 'false');
+      }
+    });
+
+    // Close on Escape
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') {
+        wrap.classList.remove('open');
+        btn.setAttribute('aria-expanded', 'false');
+      }
+    });
+  })();
+
+  // Fade-in on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.style.opacity = '1';
+        e.target.style.transform = 'translateY(0)';
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08 });
+
+  document.querySelectorAll('.feat-card, .shot-card, .inc-card, .tech-row, .stat-item').forEach((el, i) => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(20px)';
+    el.style.transition = `opacity 0.5s ease ${i * 0.04}s, transform 0.5s ease ${i * 0.04}s`;
+    observer.observe(el);
+  });
+
+  // ── Odoo CRM contact form ──────────────────────────────────────
+  (function () {
+    const form   = document.getElementById('ppap-contact-form');
+    const btn    = document.getElementById('cf-submit');
+    const msgBox = document.getElementById('cf-msg');
+    function showMsg(type, text) {
+      msgBox.className = 'form-msg ' + type;
+      msgBox.textContent = text;
+    }
+
+    const moduleLabels = {
+      ppap_workflow: 'PPAP Workflow — Automotive AIAG PPAP-4 ($349)',
+      ppap_common:   'PPAP Manager — Multi-Industry Premium ($499)',
+      both:          'Both Modules',
+      other:         'Other / Not sure yet'
+    };
+
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+      const name    = document.getElementById('cf-name').value.trim();
+      const email   = document.getElementById('cf-email').value.trim();
+      const company = document.getElementById('cf-company').value.trim();
+      const module  = document.getElementById('cf-module').value;
+      const message = document.getElementById('cf-message').value.trim();
+
+      if (!name || !email || !company || !module) {
+        showMsg('error', 'Please fill in all required fields including the module selection.');
+        return;
+      }
+      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+        showMsg('error', 'Please enter a valid email address.');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Sending…';
+      msgBox.className = 'form-msg';
+
+      const moduleLabel = moduleLabels[module] || module;
+      const desc = [
+        'PPAP Module Enquiry from ppap.navabrindsol.com',
+        '',
+        'Name: ' + name,
+        'Email: ' + email,
+        'Company: ' + company,
+        'Module: ' + moduleLabel,
+        message ? ('\nMessage:\n' + message) : ''
+      ].join('\n').trim();
+
+      try {
+        const res = await fetch('/.netlify/functions/submit-lead', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, company, module, moduleLabel, message })
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          showMsg('success', 'Thanks ' + name + '! We\'ll be in touch within 1 business day.');
+          form.reset();
+        } else {
+          window.location.href = 'mailto:support@navabrindsol.com'
+            + '?subject=' + encodeURIComponent('PPAP Module Enquiry — ' + company)
+            + '&body=' + encodeURIComponent(desc);
+        }
+      } catch (err) {
+        window.location.href = 'mailto:support@navabrindsol.com'
+          + '?subject=' + encodeURIComponent('PPAP Module Enquiry — ' + company)
+          + '&body=' + encodeURIComponent(desc);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Send Enquiry →';
+      }
+    });
+  })();
+</script>
