@@ -1722,14 +1722,10 @@
           showMsg('success', 'Thanks ' + name + '! We\'ll be in touch within 1 business day.');
           form.reset();
         } else {
-          window.location.href = 'mailto:support@navabrindsol.com'
-            + '?subject=' + encodeURIComponent('PPAP Module Enquiry — ' + company)
-            + '&body=' + encodeURIComponent(desc);
+          showMsg('error', 'Something went wrong. Please try again or contact us at navabrindsol.com.');
         }
       } catch (err) {
-        window.location.href = 'mailto:support@navabrindsol.com'
-          + '?subject=' + encodeURIComponent('PPAP Module Enquiry — ' + company)
-          + '&body=' + encodeURIComponent(desc);
+        showMsg('error', 'Unable to submit. Please try again shortly.');
       } finally {
         btn.disabled = false;
         btn.textContent = 'Send Enquiry →';

@@ -55,21 +55,25 @@ exports.handler = async (event) => {
     return { statusCode: 400, body: JSON.stringify({ error: "Invalid JSON" }) };
   }
 
-  const { name, email, company, message } = body;
+  const { name, email, company, module, moduleLabel, message } = body;
   if (!name || !email || !company) {
     return { statusCode: 400, body: JSON.stringify({ error: "Missing required fields" }) };
   }
 
+  const moduleLine = moduleLabel || module || "Not specified";
+
   const desc = [
-    "PPAP Workflow Module — Enquiry from ppap.navabrindsol.com",
+    "PPAP Module Enquiry from ppap.navabrindsol.com",
     "",
     `Name: ${name}`,
     `Email: ${email}`,
     `Company: ${company}`,
+    `Module of Interest: ${moduleLine}`,
+    `Lead Source: PPAP Website`,
     message ? `\nMessage:\n${message}` : "",
   ].join("\n").trim();
 
-  const leadTitle = `PPAP Workflow Enquiry — ${company}`;
+  const leadTitle = `${moduleLine} — ${company}`;
 
   // Build XML-RPC params for execute_kw
   const params = `
@@ -86,6 +90,8 @@ exports.handler = async (event) => {
         <member><name>partner_name</name>${xmlValue(company)}</member>
         <member><name>description</name>${xmlValue(desc)}</member>
         <member><name>type</name>${xmlValue("lead")}</member>
+        <member><name>ref</name>${xmlValue(moduleLine)}</member>
+        <member><name>tag_ids</name><value><array><data></data></array></value></member>
       </struct></value>
     </data></array></value></param>
     <param><value><struct></struct></value></param>`;
